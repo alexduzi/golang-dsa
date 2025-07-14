@@ -131,6 +131,20 @@ func (ll *LinkedList) checkLoop() bool {
 	return false
 }
 
+func (ll *LinkedList) findElement(data string) int {
+	current := ll.head
+	pos := 1
+
+	for current != nil {
+		if data == current.data {
+			return pos
+		}
+		pos++
+		current = current.next
+	}
+	return -1
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
