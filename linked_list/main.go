@@ -11,7 +11,7 @@ type LinkedList struct {
 
 type Node struct {
 	data string
-	node *Node
+	next *Node
 }
 
 func (ll *LinkedList) printList() {
@@ -20,7 +20,7 @@ func (ll *LinkedList) printList() {
 	for current != nil {
 		sb.WriteString(current.data)
 		sb.WriteString("--> ")
-		current = current.node
+		current = current.next
 	}
 	fmt.Println(sb.String())
 }
@@ -29,7 +29,7 @@ func (ll *LinkedList) Length() (count int) {
 	current := ll.head
 	for current != nil {
 		count++
-		current = current.node
+		current = current.next
 	}
 	return
 }
@@ -41,42 +41,42 @@ func (ll *LinkedList) insertBeginning(data string) {
 
 func (ll *LinkedList) insertEnding(data string) {
 	newNode := &Node{data, nil}
-	if ll.head.node == nil {
-		ll.head.node = newNode
+	if ll.head.next == nil {
+		ll.head.next = newNode
 		return
 	}
 
 	// loop the entire list until reach at the end
 	// when you reach the end the node will be nil
 	current := ll.head
-	for current.node != nil {
-		current = current.node
+	for current.next != nil {
+		current = current.next
 	}
-	current.node = newNode
+	current.next = newNode
 }
 
 func (ll *LinkedList) removeFirst() {
 	if ll.head == nil {
 		return
 	}
-	ll.head = ll.head.node
+	ll.head = ll.head.next
 }
 
 func (ll *LinkedList) removeLast() {
-	if ll.head == nil || ll.head.node == nil {
+	if ll.head == nil || ll.head.next == nil {
 		return
 	}
 	previous := ll.head
-	for previous.node.node != nil {
-		previous = previous.node
+	for previous.next.next != nil {
+		previous = previous.next
 	}
-	previous.node = nil
+	previous.next = nil
 }
 
 func (ll *LinkedList) insertAtPosition(data string, position int) {
 	newNode := &Node{data: data}
 	if position == 1 {
-		newNode.node = ll.head
+		newNode.next = ll.head
 		ll.head = newNode
 		return
 	}
@@ -85,13 +85,13 @@ func (ll *LinkedList) insertAtPosition(data string, position int) {
 	count := 1
 
 	for count < position-1 {
-		previous = previous.node
+		previous = previous.next
 		count++
 	}
 
-	current := previous.node
-	newNode.node = current
-	previous.node = newNode
+	current := previous.next
+	newNode.next = current
+	previous.next = newNode
 }
 
 func (ll *LinkedList) removeAtPosition(position int) {
@@ -100,19 +100,19 @@ func (ll *LinkedList) removeAtPosition(position int) {
 	}
 
 	if position == 1 {
-		ll.head = ll.head.node
+		ll.head = ll.head.next
 	}
 
 	previous := ll.head
 	count := 1
 
 	for count < position-1 {
-		previous = previous.node
+		previous = previous.next
 		count++
 	}
 
-	current := previous.node
-	previous.node = current.node
+	current := previous.next
+	previous.next = current.next
 	current = nil
 }
 
