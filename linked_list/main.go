@@ -73,6 +73,27 @@ func (ll *LinkedList) removeLast() {
 	previous.node = nil
 }
 
+func (ll *LinkedList) insertAtPosition(data string, position int) {
+	newNode := &Node{data: data}
+	if position == 1 {
+		newNode.node = ll.head
+		ll.head = newNode
+		return
+	}
+
+	previous := ll.head
+	count := 1
+
+	for count < position-1 {
+		previous = previous.node
+		count++
+	}
+
+	current := previous.node
+	newNode.node = current
+	previous.node = newNode
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
@@ -89,5 +110,7 @@ func main() {
 	linkedList.removeFirst()
 	linkedList.printList()
 	linkedList.removeLast()
+	linkedList.printList()
+	linkedList.insertAtPosition("insertingPos3", 3)
 	linkedList.printList()
 }
