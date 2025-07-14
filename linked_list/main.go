@@ -116,6 +116,21 @@ func (ll *LinkedList) removeAtPosition(position int) {
 	current = nil
 }
 
+func (ll *LinkedList) checkLoop() bool {
+	fastPointer := ll.head
+	slowPointer := ll.head
+
+	for fastPointer != nil && fastPointer.next != nil {
+		fastPointer = fastPointer.next.next
+		slowPointer = slowPointer.next
+		if slowPointer == fastPointer {
+			return true
+		}
+	}
+
+	return false
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
