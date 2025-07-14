@@ -145,6 +145,21 @@ func (ll *LinkedList) findElement(data string) int {
 	return -1
 }
 
+func (ll *LinkedList) reverseList() {
+	current := ll.head
+	var previous *Node
+	var next *Node
+
+	for current != nil {
+		next = current.next
+		current.next = previous
+		previous = current
+		current = next
+	}
+
+	ll.head = previous
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
@@ -165,5 +180,7 @@ func main() {
 	linkedList.insertAtPosition("insertingPos3", 3)
 	linkedList.printList()
 	linkedList.removeAtPosition(3)
+	linkedList.printList()
+	linkedList.reverseList()
 	linkedList.printList()
 }
