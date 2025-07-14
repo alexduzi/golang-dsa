@@ -25,7 +25,7 @@ func (ll *LinkedList) printList() {
 	fmt.Println(sb.String())
 }
 
-func (ll *LinkedList) findLength() (count int) {
+func (ll *LinkedList) Length() (count int) {
 	current := ll.head
 	for current != nil {
 		count++
@@ -62,19 +62,32 @@ func (ll *LinkedList) removeFirst() {
 	ll.head = ll.head.node
 }
 
+func (ll *LinkedList) removeLast() {
+	if ll.head == nil || ll.head.node == nil {
+		return
+	}
+	previous := ll.head
+	for previous.node.node != nil {
+		previous = previous.node
+	}
+	previous.node = nil
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
 	linkedList.printList()
-	fmt.Printf("List length: %d\n", linkedList.findLength())
+	fmt.Printf("List length: %d\n", linkedList.Length())
 	linkedList.insertBeginning("test1")
 	linkedList.insertBeginning("test2")
 	linkedList.printList()
-	fmt.Printf("List length: %d\n", linkedList.findLength())
+	fmt.Printf("List length: %d\n", linkedList.Length())
 	linkedList.insertEnding("ending")
 	linkedList.printList()
 	linkedList.insertBeginning("another one")
 	linkedList.printList()
 	linkedList.removeFirst()
+	linkedList.printList()
+	linkedList.removeLast()
 	linkedList.printList()
 }
