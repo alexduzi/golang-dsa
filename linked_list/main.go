@@ -25,7 +25,7 @@ func (ll *LinkedList) printList() {
 	fmt.Println(sb.String())
 }
 
-func (ll *LinkedList) Length() (count int) {
+func (ll *LinkedList) length() (count int) {
 	current := ll.head
 	for current != nil {
 		count++
@@ -164,11 +164,11 @@ func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
 	linkedList.printList()
-	fmt.Printf("List length: %d\n", linkedList.Length())
+	fmt.Printf("List length: %d\n", linkedList.length())
 	linkedList.insertBeginning("test1")
 	linkedList.insertBeginning("test2")
 	linkedList.printList()
-	fmt.Printf("List length: %d\n", linkedList.Length())
+	fmt.Printf("List length: %d\n", linkedList.length())
 	linkedList.insertEnding("ending")
 	linkedList.printList()
 	linkedList.insertBeginning("another one")
