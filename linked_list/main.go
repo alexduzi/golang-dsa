@@ -131,6 +131,32 @@ func (ll *LinkedList) checkLoop() bool {
 	return false
 }
 
+// this algorith is based on the floyd cycle -> loop detection
+func (ll *LinkedList) findWhereLoopStarts() *Node {
+	fastPointer := ll.head
+	slowPointer := ll.head
+
+	for fastPointer != nil && fastPointer.next != nil {
+		// in some point they will meet in the loop
+		// this pointer runs 2x times faster
+		fastPointer = fastPointer.next.next
+		// this pointer runs 1x slow
+		slowPointer = slowPointer.next
+
+		if slowPointer == fastPointer {
+			temp := ll.head
+			for slowPointer != temp {
+				temp = temp.next
+				slowPointer = slowPointer.next
+			}
+			// return the node that starts the loop
+			return temp
+		}
+	}
+
+	return nil
+}
+
 func (ll *LinkedList) findElement(data string) int {
 	current := ll.head
 	pos := 1
