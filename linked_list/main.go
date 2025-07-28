@@ -207,6 +207,29 @@ func (ll *LinkedList) reverseList() {
 	ll.head = previous
 }
 
+func mergeTwoLists(list1 *Node, list2 *Node) *Node {
+	dummy := &Node{}
+	op := dummy
+
+	for list1 != nil && list2 != nil {
+		if list1.data <= list2.data {
+			op.next = list1
+			list1 = list1.next
+		} else {
+			op.next = list2
+			list2 = list2.next
+		}
+		op = op.next
+	}
+	if list1 != nil {
+		op.next = list1
+	}
+	if list2 != nil {
+		op.next = list2
+	}
+	return dummy.next
+}
+
 func main() {
 	linkedList := &LinkedList{&Node{"node1", &Node{"node2", &Node{"node2", &Node{"node4", &Node{"node5", nil}}}}}}
 
