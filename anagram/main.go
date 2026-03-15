@@ -1,8 +1,16 @@
 package main
 
+import (
+	"sort"
+	"strings"
+)
+
 func main() {
 	println(isAnagram("anagram", "nagaram"))
 	println(isAnagram("rat", "cat"))
+
+	println(isAnagram2("anagram", "nagaram"))
+	println(isAnagram2("rat", "cat"))
 }
 
 // anagram é um texto formado pelo rearanjo das letras em um texto diferente
@@ -27,4 +35,22 @@ func isAnagram(s, t string) bool {
 	}
 
 	return true
+}
+
+// ordenando as duas palavras
+func isAnagram2(s, t string) bool {
+
+	if len(s) != len(t) {
+		return false
+	}
+	sSplit := strings.Split(s, "")
+	tSplit := strings.Split(t, "")
+
+	sort.Strings(sSplit)
+	sort.Strings(tSplit)
+
+	sSorted := strings.Join(sSplit, "")
+	tSorted := strings.Join(tSplit, "")
+
+	return sSorted == tSorted
 }
