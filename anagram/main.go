@@ -1,0 +1,30 @@
+package main
+
+func main() {
+	println(isAnagram("anagram", "nagaram"))
+	println(isAnagram("rat", "cat"))
+}
+
+// anagram é um texto formado pelo rearanjo das letras em um texto diferente
+// tipicamente utilizando todas as letras originais exatamente uma vez
+func isAnagram(s, t string) bool {
+
+	if len(s) != len(t) {
+		return false
+	}
+
+	hash := make(map[byte]int, len(s))
+
+	for i := 0; i < len(s); i++ {
+		hash[s[i]] += 1
+		hash[t[i]] -= 1
+	}
+
+	for _, v := range hash {
+		if v != 0 {
+			return false
+		}
+	}
+
+	return true
+}
