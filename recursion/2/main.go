@@ -3,10 +3,10 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("%d\n", fat(3))
-	fmt.Printf("%d\n", fat(5))
-	fmt.Printf("%d\n", fat(20))
-	fmt.Printf("%d\n", fat(17))
+	fmt.Printf("%d\n", fat2(3))
+	fmt.Printf("%d\n", fat2(5))
+	fmt.Printf("%d\n", fat2(20))
+	fmt.Printf("%d\n", fat2(17))
 }
 
 func fat(n int) int {
@@ -15,4 +15,16 @@ func fat(n int) int {
 	}
 
 	return n * fat(n-1)
+}
+
+func fat2(n int) int {
+	return fatTailRecursive(n, 1)
+}
+
+func fatTailRecursive(n, total int) int {
+	if n == 0 {
+		return total
+	}
+
+	return fatTailRecursive(n-1, n*total)
 }
