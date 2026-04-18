@@ -23,6 +23,7 @@ func search(arr []int, e int) int {
 }
 
 // busca binária
+// O(long n)
 func binarySearchIter(arr []int, e int) int {
 	low := 0
 	middle := 0
