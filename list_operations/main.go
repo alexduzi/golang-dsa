@@ -4,6 +4,8 @@ import "fmt"
 
 func main() {
 	linkedList := NewLinkedList()
+	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
+
 	linkedList.AddAtEnd(1)
 	linkedList.AddAtEnd(2)
 	linkedList.AddAtEnd(3)
@@ -12,7 +14,9 @@ func main() {
 
 	linkedList.PrintLinkedList()
 
-	fmt.Printf("Tamanho da lista: %v", linkedList.GetSize())
+	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
+
+	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
 }
 
 type Node struct {
@@ -71,4 +75,8 @@ func (l *LinkedList) PrintLinkedList() {
 
 func (l *LinkedList) GetSize() int {
 	return l.size
+}
+
+func (l *LinkedList) IsEmpty() bool {
+	return l.head == nil
 }
