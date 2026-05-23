@@ -48,7 +48,7 @@ func main() {
 	fmt.Printf("Posicao do elemento 89: %v\n", linkedList.IndexOf(89))
 	fmt.Printf("Posicao do elemento 190: %v\n", linkedList.IndexOf(190))
 
-	linkedList.RemoveAtPosition(4)
+	fmt.Printf("Removendo o elemento da posicao 4: %v\n", linkedList.RemoveAtPosition(4))
 	linkedList.PrintLinkedList()
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 }
