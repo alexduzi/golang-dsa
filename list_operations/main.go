@@ -161,21 +161,19 @@ func (l *LinkedList) AddAtPosition(value, index int) {
 		return
 	}
 
-	node := NewNode(value)
-
-	// encontra o elemento com a posicao
-	current := l.head
-	for i := 0; i < index-1 && current != nil; i++ {
-		current = current.next
-	}
-
-	if current != nil {
-		node.next = current.next
-		current.next = node
-		l.size++
+	// se nao encontrar a posicao adiciona no final
+	if l.GetNode(index) == nil {
+		l.AddAtEnd(value)
 		return
 	}
 
-	// se nao encontrar a posicao adiciona no final
-	l.AddAtEnd(value)
+	node := NewNode(value)
+
+	// encontra o elemento com a posicao
+	aux := l.GetNode(index - 1)
+
+	node.next = aux.next
+
+	aux.next = node
+	l.size++
 }
