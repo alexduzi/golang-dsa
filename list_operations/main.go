@@ -47,6 +47,10 @@ func main() {
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 	fmt.Printf("Posicao do elemento 89: %v\n", linkedList.IndexOf(89))
 	fmt.Printf("Posicao do elemento 190: %v\n", linkedList.IndexOf(190))
+
+	linkedList.RemoveAtPosition(4)
+	linkedList.PrintLinkedList()
+	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 }
 
 type Node struct {
@@ -205,4 +209,38 @@ func (l *LinkedList) Contains(value int) bool {
 	}
 
 	return false
+}
+
+func (l *LinkedList) RemoveAtPosition(index int) int {
+	if l.IsEmpty() || l.GetNode(index) == nil {
+		return -1
+	}
+
+	var item int
+	var aux *Node
+
+	// remover do inicio
+	if index == 0 {
+		item = l.head.value
+		l.head = l.head.next // o root vira o proximo
+		l.size--
+		return item
+	}
+
+	// remover do final
+	if index == l.GetSize()-1 {
+		aux = l.GetNode(index - 1)
+		item = aux.next.value
+		aux.next = nil
+		l.size--
+		return item
+	}
+
+	// remover no meio da lista
+	aux = l.GetNode(index - 1)
+	item = aux.next.value
+	aux.next = aux.next.next
+	l.size--
+
+	return item
 }
