@@ -36,6 +36,8 @@ func main() {
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 
 	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
+
+	fmt.Printf("Nó da posicao 3: %+v\n", linkedList.GetNode(3))
 }
 
 type Node struct {
@@ -122,4 +124,25 @@ func (l *LinkedList) AddAtStart(value int) {
 	l.head = node
 	node.next = aux
 	l.size++
+}
+
+func (l *LinkedList) GetNode(index int) *Node {
+	// verifica se o parametro index não ultrapassa a lista
+	if index < 0 && index > l.GetSize() {
+		return nil
+	}
+
+	current := l.head
+	i := 0
+
+	for i != index {
+		current = current.next
+		i++
+	}
+
+	if current != nil {
+		return current
+	}
+
+	return nil
 }
