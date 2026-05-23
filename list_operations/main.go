@@ -10,8 +10,7 @@ func main() {
 	linkedList.AddAtEnd(4)
 	linkedList.AddAtEnd(5)
 
-	// fmt.Printf("%v\n", linkedList.Head.Next.Value)
-	linkedList.PrintList()
+	linkedList.PrintLinkedList()
 }
 
 type Node struct {
@@ -54,16 +53,16 @@ func (l *LinkedList) AddAtEnd(value int) {
 	l.Size++
 }
 
-func (l *LinkedList) PrintList() {
+func (l *LinkedList) PrintLinkedList() {
 	if l.Head == nil {
-		fmt.Println("list is empty")
+		fmt.Printf("Lista vazia!\n")
 		return
 	}
 
 	current := l.Head
-	fmt.Println(current.Value)
-	for current.Next != nil {
+
+	for current != nil {
+		fmt.Printf("%v\n", current.Value)
 		current = current.Next
-		fmt.Println(current.Value)
 	}
 }
