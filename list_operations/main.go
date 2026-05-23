@@ -197,3 +197,12 @@ func (l *LinkedList) IndexOf(value int) int {
 
 	return -1
 }
+
+func (l *LinkedList) Contains(value int) bool {
+	index := l.IndexOf(value)
+	if index != -1 {
+		return true
+	}
+
+	return false
+}
