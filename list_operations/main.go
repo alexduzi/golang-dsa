@@ -45,6 +45,8 @@ func main() {
 
 	fmt.Printf("Nó da posicao 2: %+v\n", linkedList.GetNode(2))
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
+	fmt.Printf("Posicao do elemento 89: %v\n", linkedList.IndexOf(89))
+	fmt.Printf("Posicao do elemento 190: %v\n", linkedList.IndexOf(190))
 }
 
 type Node struct {
@@ -176,4 +178,22 @@ func (l *LinkedList) AddAtPosition(value, index int) {
 
 	aux.next = node
 	l.size++
+}
+
+func (l *LinkedList) IndexOf(value int) int {
+	if l.IsEmpty() {
+		return -1
+	}
+
+	current := l.head
+	pos := 0
+	for current != nil {
+		if current.value == value {
+			return pos
+		}
+		current = current.next
+		pos++
+	}
+
+	return -1
 }
