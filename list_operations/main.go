@@ -17,6 +17,13 @@ func main() {
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 
 	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
+
+	fmt.Printf("\n\nLimpando a lista\n\n")
+	linkedList.Clear()
+
+	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
+
+	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
 }
 
 type Node struct {
@@ -79,4 +86,9 @@ func (l *LinkedList) GetSize() int {
 
 func (l *LinkedList) IsEmpty() bool {
 	return l.head == nil
+}
+
+func (l *LinkedList) Clear() {
+	l.head = nil
+	l.size = 0
 }
