@@ -24,6 +24,18 @@ func main() {
 	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 
 	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
+
+	linkedList.AddAtEnd(1)
+	linkedList.AddAtEnd(2)
+	linkedList.AddAtEnd(3)
+	linkedList.AddAtEnd(4)
+	linkedList.AddAtEnd(5)
+
+	linkedList.AddAtStart(90)
+	linkedList.PrintLinkedList()
+	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
+
+	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
 }
 
 type Node struct {
@@ -91,4 +103,23 @@ func (l *LinkedList) IsEmpty() bool {
 func (l *LinkedList) Clear() {
 	l.head = nil
 	l.size = 0
+}
+
+func (l *LinkedList) AddAtStart(value int) {
+	node := NewNode(value)
+
+	// tratar se a lista está vazia
+	// mesmo passo do método adicionar ao fim
+	if l.IsEmpty() {
+		l.head = node
+		l.size++
+		return
+	}
+
+	// guardar a referencia em uma var auxiliar
+	aux := l.head
+
+	l.head = node
+	node.next = aux
+	l.size++
 }
