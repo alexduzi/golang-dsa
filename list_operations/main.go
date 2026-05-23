@@ -38,6 +38,13 @@ func main() {
 	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
 
 	fmt.Printf("Nó da posicao 3: %+v\n", linkedList.GetNode(3))
+
+	linkedList.AddAtPosition(89, 2)
+	linkedList.PrintLinkedList()
+	fmt.Printf("Lista esta vazia?: %v\n", linkedList.IsEmpty())
+
+	fmt.Printf("Nó da posicao 2: %+v\n", linkedList.GetNode(2))
+	fmt.Printf("Tamanho da lista: %v\n", linkedList.GetSize())
 }
 
 type Node struct {
@@ -64,7 +71,7 @@ func (l *LinkedList) AddAtEnd(value int) {
 	node := NewNode(value)
 
 	// tratar se a lista está vazia
-	if l.head == nil {
+	if l.IsEmpty() {
 		l.head = node
 		l.size++
 		return
@@ -81,7 +88,7 @@ func (l *LinkedList) AddAtEnd(value int) {
 }
 
 func (l *LinkedList) PrintLinkedList() {
-	if l.head == nil {
+	if l.IsEmpty() {
 		fmt.Printf("Lista vazia!\n")
 		return
 	}
@@ -145,4 +152,30 @@ func (l *LinkedList) GetNode(index int) *Node {
 	}
 
 	return nil
+}
+
+func (l *LinkedList) AddAtPosition(value, index int) {
+	// se for primeira posicao
+	if index == 0 {
+		l.AddAtStart(value)
+		return
+	}
+
+	node := NewNode(value)
+
+	// encontra o elemento com a posicao
+	current := l.head
+	for i := 0; i < index-1 && current != nil; i++ {
+		current = current.next
+	}
+
+	if current != nil {
+		node.next = current.next
+		current.next = node
+		l.size++
+		return
+	}
+
+	// se nao encontrar a posicao adiciona no final
+	l.AddAtEnd(value)
 }
