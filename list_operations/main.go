@@ -244,3 +244,12 @@ func (l *LinkedList) RemoveAtPosition(index int) int {
 
 	return item
 }
+
+func (l *LinkedList) RemoveElement(value int) bool {
+	index := l.IndexOf(value)
+	if l.IsEmpty() || index == -1 {
+		return false
+	}
+	l.RemoveAtPosition(index)
+	return true
+}
