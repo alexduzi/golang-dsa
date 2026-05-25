@@ -77,3 +77,19 @@ func (list *DoublyLinkedList) ToArray() (result []int) {
 
 	return
 }
+
+func (list *DoublyLinkedList) AddAtStart(value int) {
+	node := NewNode(value)
+
+	if list.IsEmpty() {
+		list.Head = node
+		list.Tail = node
+		list.Size++
+		return
+	}
+
+	aux := list.Head
+	list.Head = node
+	node.Next = aux
+	list.Size++
+}
