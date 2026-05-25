@@ -29,7 +29,7 @@ func NewNode(value int) *Node {
 type DoublyLinkedList struct {
 	Head *Node
 	Tail *Node
-	Size int32
+	Size int
 }
 
 func NewDoublyLinkedList() *DoublyLinkedList {
@@ -40,7 +40,7 @@ func (list *DoublyLinkedList) IsEmpty() bool {
 	return list.Head == nil
 }
 
-func (list *DoublyLinkedList) GetSize() int32 {
+func (list *DoublyLinkedList) GetSize() int {
 	return list.Size
 }
 
@@ -95,7 +95,7 @@ func (list *DoublyLinkedList) AddAtStart(value int) {
 }
 
 func (list *DoublyLinkedList) GetNode(index int) *Node {
-	if index < 0 || index > int(list.GetSize()) {
+	if index < 0 || index > list.GetSize() {
 		return nil
 	}
 
@@ -108,4 +108,12 @@ func (list *DoublyLinkedList) GetNode(index int) *Node {
 	}
 
 	return current
+}
+
+func (list *DoublyLinkedList) GetValue(index int) int {
+	current := list.GetNode(index)
+	if current != nil {
+		return current.Value
+	}
+	return -1
 }
