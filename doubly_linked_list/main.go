@@ -12,6 +12,9 @@ func main() {
 	list.AddAtEnd(23)
 
 	fmt.Printf("%v\n", list.ToArray())
+
+	list.AddAtPosition(99, 3)
+	fmt.Printf("%v\n", list.ToArray())
 }
 
 type Node struct {
@@ -116,4 +119,26 @@ func (list *DoublyLinkedList) GetValue(index int) int {
 		return current.Value
 	}
 	return -1
+}
+
+func (list *DoublyLinkedList) AddAtPosition(value, index int) {
+	if index == 0 {
+		list.AddAtStart(value)
+		return
+	}
+
+	if list.GetNode(index) == nil || index == list.GetSize() {
+		list.AddAtEnd(value)
+		return
+	}
+
+	node := NewNode(value)
+
+	// pega o anterior do desejado
+	current := list.GetNode(index - 1)
+	current.Next.Prev = node
+	node.Next = current.Next
+	node.Prev = current
+	current.Next = node
+	list.Size++
 }
