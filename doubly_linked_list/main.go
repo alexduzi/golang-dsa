@@ -11,7 +11,7 @@ func main() {
 	list.AddAtEnd(16)
 	list.AddAtEnd(23)
 
-	fmt.Printf("%v\n", list)
+	fmt.Printf("%v\n", list.ToArray())
 }
 
 type Node struct {
@@ -54,4 +54,16 @@ func (list *DoublyLinkedList) AddAtEnd(value int) {
 	list.Tail.Next = node
 	list.Tail = node
 	list.Size++
+}
+
+func (list *DoublyLinkedList) ToArray() (result []int) {
+	current := list.Head
+	result = make([]int, 0, list.Size)
+
+	for current != nil {
+		result = append(result, current.Value)
+		current = current.Next
+	}
+
+	return
 }
