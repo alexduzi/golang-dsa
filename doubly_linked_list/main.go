@@ -40,6 +40,16 @@ func (list *DoublyLinkedList) IsEmpty() bool {
 	return list.Head == nil
 }
 
+func (list *DoublyLinkedList) GetSize() int32 {
+	return list.Size
+}
+
+func (list *DoublyLinkedList) Clear() {
+	list.Head = nil
+	list.Tail = nil
+	list.Size = 0
+}
+
 func (list *DoublyLinkedList) AddAtEnd(value int) {
 	node := NewNode(value)
 
