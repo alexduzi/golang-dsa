@@ -93,3 +93,19 @@ func (list *DoublyLinkedList) AddAtStart(value int) {
 	node.Next = aux
 	list.Size++
 }
+
+func (list *DoublyLinkedList) GetNode(index int) *Node {
+	if index < 0 || index > int(list.GetSize()) {
+		return nil
+	}
+
+	current := list.Head
+	currIndex := 0
+
+	for current != nil && currIndex < index {
+		current = current.Next
+		currIndex++
+	}
+
+	return current
+}
