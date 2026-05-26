@@ -18,6 +18,9 @@ func main() {
 
 	list.RemoveFirst()
 	fmt.Printf("%v\n", list.ToArray())
+
+	list.RemoveLast()
+	fmt.Printf("%v\n", list.ToArray())
 }
 
 type Node struct {
@@ -169,6 +172,19 @@ func (list *DoublyLinkedList) RemoveFirst() *Node {
 		list.Tail = nil
 	} else {
 		list.Head.Prev = nil
+	}
+	list.Size--
+	return aux
+}
+
+func (list *DoublyLinkedList) RemoveLast() *Node {
+	aux := list.Tail
+	list.Tail = list.Tail.Prev
+
+	if list.Tail == nil {
+		list.Head = nil
+	} else {
+		list.Tail.Next = nil
 	}
 	list.Size--
 	return aux
