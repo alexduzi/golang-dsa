@@ -142,3 +142,18 @@ func (list *DoublyLinkedList) AddAtPosition(value, index int) {
 	current.Next = node
 	list.Size++
 }
+
+func (list *DoublyLinkedList) IndexOf(value int) int {
+	current := list.Head
+	index := 0
+
+	for current != nil {
+		if current.Value == value {
+			return index
+		}
+		current = current.Next
+		index++
+	}
+
+	return -1
+}
