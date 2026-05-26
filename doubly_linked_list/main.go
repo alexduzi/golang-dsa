@@ -15,6 +15,9 @@ func main() {
 
 	list.AddAtPosition(99, 3)
 	fmt.Printf("%v\n", list.ToArray())
+
+	list.RemoveFirst()
+	fmt.Printf("%v\n", list.ToArray())
 }
 
 type Node struct {
@@ -156,4 +159,17 @@ func (list *DoublyLinkedList) IndexOf(value int) int {
 	}
 
 	return -1
+}
+
+func (list *DoublyLinkedList) RemoveFirst() *Node {
+	aux := list.Head
+	list.Head = list.Head.Next
+
+	if list.Head == nil {
+		list.Tail = nil
+	} else {
+		list.Head.Prev = nil
+	}
+	list.Size--
+	return aux
 }
