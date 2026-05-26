@@ -21,6 +21,9 @@ func main() {
 
 	list.RemoveLast()
 	fmt.Printf("%v\n", list.ToArray())
+
+	list.Reverse()
+	fmt.Printf("%v\n", list.ToArray())
 }
 
 type Node struct {
@@ -218,4 +221,22 @@ func (list *DoublyLinkedList) Remove(value int) bool {
 	}
 	list.RemoveAtPosition(index)
 	return true
+}
+
+func (list *DoublyLinkedList) Reverse() {
+	nodeHead := list.Head
+	nodeTail := list.Tail
+
+	list.Head = nodeTail
+	list.Tail = nodeHead
+
+	current := nodeHead
+	aux := new(Node)
+
+	for current != nil {
+		aux = current.Next
+		current.Next = current.Prev
+		current.Prev = aux
+		current = aux
+	}
 }
