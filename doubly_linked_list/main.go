@@ -189,3 +189,24 @@ func (list *DoublyLinkedList) RemoveLast() *Node {
 	list.Size--
 	return aux
 }
+
+func (list *DoublyLinkedList) RemoveAtPosition(index int) int {
+	if list.IsEmpty() || list.GetNode(index) != nil {
+		return -1
+	}
+
+	if index == 0 {
+		return list.RemoveFirst().Value
+	}
+
+	if index == list.GetSize()-1 {
+		return list.RemoveLast().Value
+	}
+
+	current := list.GetNode(index)
+
+	current.Prev.Next = current.Next
+	current.Next.Prev = current.Prev
+	list.Size--
+	return current.Value
+}
