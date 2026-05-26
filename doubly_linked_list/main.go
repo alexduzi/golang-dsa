@@ -210,3 +210,12 @@ func (list *DoublyLinkedList) RemoveAtPosition(index int) int {
 	list.Size--
 	return current.Value
 }
+
+func (list *DoublyLinkedList) Remove(value int) bool {
+	index := list.IndexOf(value)
+	if list.IsEmpty() || index == -1 {
+		return false
+	}
+	list.RemoveAtPosition(index)
+	return true
+}
