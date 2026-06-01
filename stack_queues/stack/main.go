@@ -91,6 +91,14 @@ func main() {
 		fmt.Print("%w\n", err)
 	}
 	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isValid)
+
+	fmt.Println()
+	fmt.Println("---------------------------")
+	fmt.Println("---------------------------")
+	fmt.Println()
+
+	fmt.Printf("Removendo duplicacoes: abbaca -> %s\n", removeDuplicates("abbaca"))
+	fmt.Printf("Removendo duplicacoes: azxxzy -> %s\n", removeDuplicates("azxxzy"))
 }
 
 // implementação com lista / slice
@@ -190,6 +198,7 @@ func (stack *StackArray) Pop() (string, error) {
 		return "", errors.New("Stack is empty")
 	}
 	top := stack.Items[stack.Top]
+	stack.Items[stack.Top] = ""
 	stack.Top--
 	return top, nil
 }
@@ -255,11 +264,12 @@ func (stack *StackArrayGeneric[T]) Push(value T) error {
 
 // desempilha
 func (stack *StackArrayGeneric[T]) Pop() (T, error) {
+	var empty T
 	if stack.IsEmpty() {
-		var empty T
 		return empty, errors.New("Stack is empty")
 	}
 	top := stack.Items[stack.Top]
+	stack.Items[stack.Top] = empty
 	stack.Top--
 	return top, nil
 }
@@ -331,4 +341,19 @@ func isValidParentheses(text string) (bool, error) {
 	}
 
 	return stack.IsEmpty(), nil
+}
+
+func removeDuplicates(text string) string {
+	stack := NewStackArrayGeneric[rune](nil)
+
+	for _, char := range text {
+		elem, _ := stack.Peek()
+		if !stack.IsEmpty() && elem == char {
+			stack.Pop()
+		} else {
+			stack.Push(char)
+		}
+	}
+
+	return string(stack.Items)
 }
