@@ -77,6 +77,13 @@ func main() {
 		fmt.Print("%w\n", err)
 	}
 	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isBal)
+
+	text = "((())))))"
+	isBal, err = isBalanced(text)
+	if err != nil {
+		fmt.Print("%w\n", err)
+	}
+	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isBal)
 }
 
 // implementação com lista / slice
@@ -282,16 +289,14 @@ func isBalanced(text string) (bool, error) {
 	stack := NewStackArrayGeneric[rune](nil)
 
 	for _, char := range text {
-		if char == '(' {
+		switch char {
+		case '(':
 			stack.Push(char)
-		} else {
-			value, err := stack.Peek()
-			if err != nil {
-				return false, err
+		case ')':
+			if stack.IsEmpty() {
+				return false, nil
 			}
-			if value == '(' && char == ')' {
-				stack.Pop()
-			}
+			stack.Pop()
 		}
 	}
 
