@@ -20,8 +20,9 @@ func main() {
 	fmt.Printf("Quantos elementos a pilha tem?: %d\n", stack.Count())
 }
 
+// implementação com lista / slice
 type Stack struct {
-	Items []string
+	Items   []string
 	MaxSize *int
 }
 
@@ -69,3 +70,63 @@ func (stack *Stack) IsFull() bool {
 	return len(stack.Items) == *stack.MaxSize
 }
 
+// implementação com array
+type StackArray struct {
+	Items   []string
+	MaxSize *int
+	Top     int
+}
+
+func NewStackArray(maxSize *int) *StackArray {
+	stackArray := &StackArray{}
+
+	if maxSize != nil {
+		stackArray.Items = make([]string, 0, *maxSize)
+		stackArray.MaxSize = maxSize
+	} else {
+		stackArray.Items = make([]string, 100)
+		stackArray.MaxSize = new(100)
+	}
+
+	return stackArray
+}
+
+// empilha
+func (stack *StackArray) Push(value string) {
+	if !stack.IsFull() {
+		stack.Items[stack.Top] = value
+		stack.Top++
+	}
+}
+
+// desempilha
+func (stack *StackArray) Pop() string {
+	top := stack.Items[stack.Top]
+	stack.Top--
+	return top
+}
+
+// retorna o primeiro elemento da pilha sem desempilha-lo
+func (stack *StackArray) Peek() string {
+	top := stack.Items[stack.Top]
+	return top
+}
+
+// verifica se a pilha está vazia ou não
+func (stack *StackArray) IsEmpty() bool {
+	return len(stack.Items) == 0
+}
+
+// retorna o número de elementos na pilha
+func (stack *StackArray) Count() int {
+	return len(stack.Items)
+}
+
+// testa se a pilha está cheia (caso a pilha tenha limite de tamanho)
+func (stack *StackArray) IsFull() bool {
+	if stack.MaxSize == nil {
+		return false
+	}
+
+	return len(stack.Items) == *stack.MaxSize
+}
