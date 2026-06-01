@@ -26,6 +26,13 @@ func main() {
 	fmt.Println()
 
 	fmt.Printf("Problema dos tickets timeRequiredToBuy([]int{2, 3, 2}, 2)): %v\n", timeRequiredToBuy([]int{2, 3, 2}, 2))
+
+	fmt.Println()
+	fmt.Println("---------------------------")
+	fmt.Println("---------------------------")
+	fmt.Println()
+
+	fmt.Printf("Problema dos lanches dos alunos countStudents([]int{1, 1, 0, 0}, []int{0, 1, 0, 1}): %v\n", countStudents([]int{1, 1, 0, 0}, []int{0, 1, 0, 1}))
 }
 
 // Definição de Fila
@@ -116,4 +123,35 @@ func timeRequiredToBuy(tickets []int, k int) int {
 	}
 
 	return -1
+}
+
+// problema sandwich leetcode
+// https://leetcode.com/problems/number-of-students-unable-to-eat-lunch/
+func countStudents(students []int, sandwiches []int) int {
+	queueStudents := append([]int(nil), students...)
+
+	// fazer o loop até comerem todos os lanches
+	// ou até rodar a fila de todos os alunos
+	for _, sandwich := range sandwiches {
+		eat := false
+		count := len(queueStudents)
+
+		for !eat && count > 0 {
+			student := queueStudents[0]
+			queueStudents = queueStudents[1:]
+			if sandwich == student {
+				eat = true
+			} else {
+				// aluno não quis comer o lanche, volta para a fila
+				queueStudents = append(queueStudents, student)
+				count--
+			}
+		}
+
+		if count == 0 {
+			return len(queueStudents)
+		}
+	}
+
+	return 0
 }
