@@ -69,7 +69,14 @@ func main() {
 	if err != nil {
 		fmt.Print("%w\n", err)
 	}
-	fmt.Printf("O texto %s esta balanceado? -> %v", text, isBal)
+	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isBal)
+
+	text = "((()))(((())))"
+	isBal, err = isBalanced(text)
+	if err != nil {
+		fmt.Print("%w\n", err)
+	}
+	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isBal)
 }
 
 // implementação com lista / slice
@@ -282,7 +289,7 @@ func isBalanced(text string) (bool, error) {
 			if err != nil {
 				return false, err
 			}
-			if char == ')' && value == '(' {
+			if value == '(' && char == ')' {
 				stack.Pop()
 			}
 		}
