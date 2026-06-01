@@ -84,6 +84,13 @@ func main() {
 		fmt.Print("%w\n", err)
 	}
 	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isBal)
+
+	text = "()([]{})"
+	isValid, err := isValidParentheses(text)
+	if err != nil {
+		fmt.Print("%w\n", err)
+	}
+	fmt.Printf("O texto %s esta balanceado? -> %v\n", text, isValid)
 }
 
 // implementação com lista / slice
@@ -294,6 +301,29 @@ func isBalanced(text string) (bool, error) {
 			stack.Push(char)
 		case ')':
 			if stack.IsEmpty() {
+				return false, nil
+			}
+			stack.Pop()
+		}
+	}
+
+	return stack.IsEmpty(), nil
+}
+
+func isValidParentheses(text string) (bool, error) {
+	stack := NewStackArrayGeneric[rune](nil)
+
+	for _, char := range text {
+		switch char {
+		case '(':
+			stack.Push(')')
+		case '{':
+			stack.Push('}')
+		case '[':
+			stack.Push(']')
+		default:
+			elem, _ := stack.Peek()
+			if stack.IsEmpty() || elem != char {
 				return false, nil
 			}
 			stack.Pop()
