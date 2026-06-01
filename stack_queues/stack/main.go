@@ -58,6 +58,18 @@ func main() {
 	}
 	fmt.Printf("%s\n", peekElem)
 	fmt.Printf("Quantos elementos a pilha tem?: %d\n", stackArray.Count())
+
+	fmt.Println()
+	fmt.Println("---------------------------")
+	fmt.Println("---------------------------")
+	fmt.Println()
+
+	text := "((()))(("
+	isBal, err := isBalanced(text)
+	if err != nil {
+		fmt.Print("%w\n", err)
+	}
+	fmt.Printf("O texto %s esta balanceado? -> %v", text, isBal)
 }
 
 // implementação com lista / slice
@@ -186,4 +198,95 @@ func (stack *StackArray) IsFull() bool {
 
 func (stack *StackArray) Clear() {
 	stack.Top = -1
+}
+
+// implementacao de uma stack genérica com array
+type StackArrayGeneric[T any] struct {
+	Items   []T
+	MaxSize *int
+	Top     int
+}
+
+func NewStackArrayGeneric[T any](maxSize *int) *StackArrayGeneric[T] {
+	stackArray := &StackArrayGeneric[T]{}
+	stackArray.Top = -1
+
+	if maxSize != nil {
+		stackArray.Items = make([]T, 0, *maxSize)
+		stackArray.MaxSize = maxSize
+	} else {
+		stackArray.Items = make([]T, 100)
+		stackArray.MaxSize = new(100)
+	}
+
+	return stackArray
+}
+
+// empilha
+func (stack *StackArrayGeneric[T]) Push(value T) error {
+	if stack.IsFull() {
+		return errors.New("Stack is full")
+	}
+	stack.Top++
+	stack.Items[stack.Top] = value
+	return nil
+}
+
+// desempilha
+func (stack *StackArrayGeneric[T]) Pop() (T, error) {
+	if stack.IsEmpty() {
+		var empty T
+		return empty, errors.New("Stack is empty")
+	}
+	top := stack.Items[stack.Top]
+	stack.Top--
+	return top, nil
+}
+
+// retorna o primeiro elemento da pilha sem desempilha-lo
+func (stack *StackArrayGeneric[T]) Peek() (T, error) {
+	if stack.IsEmpty() {
+		var empty T
+		return empty, errors.New("Stack is empty")
+	}
+	return stack.Items[stack.Top], nil
+}
+
+// verifica se a pilha está vazia ou não
+func (stack *StackArrayGeneric[T]) IsEmpty() bool {
+	return stack.Top == -1
+}
+
+// retorna o número de elementos na pilha
+func (stack *StackArrayGeneric[T]) Count() int {
+	return stack.Top + 1
+}
+
+// testa se a pilha está cheia (caso a pilha tenha limite de tamanho)
+func (stack *StackArrayGeneric[T]) IsFull() bool {
+	return stack.Top == *stack.MaxSize-1
+}
+
+func (stack *StackArrayGeneric[T]) Clear() {
+	stack.Top = -1
+}
+
+func isBalanced(text string) (bool, error) {
+	stack := NewStackArrayGeneric[rune](nil)
+
+	for _, char := range text {
+		if char == '(' {
+			stack.Push(char)
+		} else {
+			value, err := stack.Peek()
+			if err != nil {
+				return false, err
+			}
+			if char == ')' && value == '(' {
+				stack.Pop()
+			}
+		}
+	}
+
+	return stack.IsEmpty(), nil
 }
