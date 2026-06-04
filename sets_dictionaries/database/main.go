@@ -22,7 +22,7 @@ func main() {
 
 	printDepartment(departments1)
 
-	println()
+	fmt.Println()
 
 	entry2 := []string{
 		"57,Vendas,8032,Meire Silva,8000.0,57",
@@ -35,8 +35,8 @@ func main() {
 	printDepartment(departments2)
 }
 
-func convertRecords(records []string) []Department {
-	depControl := make(map[int64]Department)
+func convertRecords(records []string) []*Department {
+	depControl := make(map[int64]*Department)
 
 	for _, csv := range records {
 		data := strings.Split(csv, ",")
@@ -47,30 +47,28 @@ func convertRecords(records []string) []Department {
 		empName := data[3]
 		empSalary, _ := strconv.ParseFloat(data[4], 64)
 
-		var department Department
-		employee := NewEmployee(empId, empName, empSalary, depId)
-
 		department, ok := depControl[depId]
-
 		if !ok {
 			department = NewDepartment(depId, depName)
+			depControl[depId] = department
 		}
-
+		employee := NewEmployee(empId, empName, empSalary, department)
 		department.addEmployee(employee)
-		depControl[depId] = department
 	}
 
-	result := make([]Department, 0)
+	result := make([]*Department, 0, len(depControl))
 	for _, dep := range depControl {
 		result = append(result, dep)
 	}
 
-	sort.Sort(ByDepartment(result))
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].name < result[j].name
+	})
 
 	return result
 }
 
-func printDepartment(department []Department) {
+func printDepartment(department []*Department) {
 	for _, dep := range department {
 		fmt.Printf("%s:\n", dep.name)
 		for _, emp := range dep.employees {
@@ -79,42 +77,36 @@ func printDepartment(department []Department) {
 	}
 }
 
-type ByDepartment []Department
-
-func (a ByDepartment) Len() int           { return len(a) }
-func (a ByDepartment) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByDepartment) Less(i, j int) bool { return a[i].name < a[j].name }
-
 type Department struct {
 	id        int64
 	name      string
-	employees []Employee
+	employees []*Employee
 }
 
-func (dep *Department) addEmployee(employee Employee) {
+func (dep *Department) addEmployee(employee *Employee) {
 	dep.employees = append(dep.employees, employee)
 }
 
-func NewDepartment(id int64, name string) Department {
-	return Department{
+func NewDepartment(id int64, name string) *Department {
+	return &Department{
 		id:        id,
 		name:      name,
-		employees: make([]Employee, 0),
+		employees: make([]*Employee, 0),
 	}
 }
 
 type Employee struct {
-	id           int64
-	name         string
-	salary       float64
-	departmentId int64
+	id         int64
+	name       string
+	salary     float64
+	department *Department
 }
 
-func NewEmployee(id int64, name string, salary float64, departmentId int64) Employee {
-	return Employee{
-		id:           id,
-		name:         name,
-		salary:       salary,
-		departmentId: departmentId,
+func NewEmployee(id int64, name string, salary float64, department *Department) *Employee {
+	return &Employee{
+		id:         id,
+		name:       name,
+		salary:     salary,
+		department: department,
 	}
 }
