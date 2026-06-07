@@ -5,7 +5,7 @@ func main() {
 }
 
 type Position[T any] interface {
-	element()
+	element() T
 }
 
 type Node[T any] struct {
