@@ -57,3 +57,29 @@ func (node *Node[T]) setElement(element T) {
 func (node *Node[T]) isLeaf() bool {
 	return len(node.children) == 0
 }
+
+type GenericTree[T any] struct {
+	root *Node[T]
+	size int
+}
+
+func NewGenericTree[T any]() *GenericTree[T] {
+	return &GenericTree[T]{}
+}
+
+func (tree *GenericTree[T]) Size() int {
+	return tree.size
+}
+
+func (tree *GenericTree[T]) IsEmpty() bool {
+	return tree.size == 0
+}
+
+func (tree *GenericTree[T]) Add(element T, parent *Node[T]) {
+	newNode := NewNode(element, parent)
+	if parent != nil {
+		tree.root = newNode
+	} else {
+		parent.addChild(newNode)
+	}
+}
