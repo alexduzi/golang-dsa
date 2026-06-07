@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 func main() {
 	tree := NewGenericTree[string]()
@@ -24,7 +27,11 @@ func printTree[T any](tree *GenericTree[T]) {
 
 func printTreeRecursive[T any](node *Node[T], tree *GenericTree[T]) {
 	fmt.Printf("%v\n", node.element())
-	for _, child := range tree.Children(node) {
+	children, err := tree.Children(node)
+	if err != nil {
+		panic(err)
+	}
+	for _, child := range children {
 		printTreeRecursive(child, tree)
 	}
 }
@@ -34,21 +41,21 @@ type Position[T any] interface {
 }
 
 type Node[T any] struct {
-	_element T
+	value    T
 	parent   *Node[T]
 	children []*Node[T]
 }
 
-func NewNode[T any](element T, parent *Node[T]) *Node[T] {
+func NewNode[T any](value T, parent *Node[T]) *Node[T] {
 	return &Node[T]{
-		_element: element,
+		value:    value,
 		parent:   parent,
 		children: make([]*Node[T], 0),
 	}
 }
 
 func (node *Node[T]) element() T {
-	return node._element
+	return node.value
 }
 
 func (node *Node[T]) getParent() *Node[T] {
@@ -75,8 +82,8 @@ func (node *Node[T]) removeChild(child *Node[T]) {
 	node.children = children
 }
 
-func (node *Node[T]) setElement(element T) {
-	node._element = element
+func (node *Node[T]) setElement(value T) {
+	node.value = value
 }
 
 func (node *Node[T]) isLeaf() bool {
@@ -104,6 +111,17 @@ func (tree *GenericTree[T]) Root() *Node[T] {
 	return tree.root
 }
 
+func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
+	node, ok := p.(*Node[T])
+	if !ok {
+		return nil, fmt.Errorf("invalid position type")
+	}
+	if node.parent == nil && node != tree.root {
+		return nil, fmt.Errorf("position is no longer in the tree")
+	}
+	return node, nil
+}
+
 func (tree *GenericTree[T]) Add(element T, parent *Node[T]) *Node[T] {
 	newNode := NewNode(element, parent)
 	if parent == nil {
@@ -114,6 +132,13 @@ func (tree *GenericTree[T]) Add(element T, parent *Node[T]) *Node[T] {
 	return newNode
 }
 
-func (tree *GenericTree[T]) Children(element *Node[T]) []*Node[T] {
-	return element.getChildren()
+func (tree *GenericTree[T]) Children(p Position[T]) ([]*Node[T], error) {
+	node, err := tree.validate(p)
+	if err != nil {
+		return nil, err
+	}
+	// retorna uma cópia de children Go 1.20 e versões antigas
+	// children := make([]*Node[T], 0, len(node.getChildren()))
+	// copy(children, node.getChildren())
+	return slices.Clone(node.getChildren()), nil
 }
