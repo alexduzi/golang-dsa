@@ -75,6 +75,14 @@ func main() {
 
 	fmt.Printf("Generic Tree size: %d\n", tree.Size())
 	fmt.Printf("Generic Tree is empty?: %v\n", tree.IsEmpty())
+
+	nodeMetodos := tree.Find("Métodos")
+	tree.Remove(nodeMetodos)
+	fmt.Println("PRINT ELEMENTS:")
+	for _, value := range tree.Elements() {
+		fmt.Println(value)
+	}
+	fmt.Printf("Generic Tree size: %d\n", tree.Size())
 }
 
 func printTree[T comparable](tree *GenericTree[T]) {
@@ -125,6 +133,11 @@ func (node *Node[T]) element() T {
 // getParent retorna o nó pai, ou nil caso seja a raiz.
 func (node *Node[T]) getParent() *Node[T] {
 	return node.parent
+}
+
+// setParent seta o nó pai.
+func (node *Node[T]) setParent(n *Node[T]) {
+	node.parent = n
 }
 
 // getChildren retorna a lista de filhos do nó.
@@ -349,5 +362,24 @@ func (tree *GenericTree[T]) Remove(p Position[T]) error {
 		parent := node.getParent()
 		parent.removeChild(node)
 	}
+	tree.size -= tree.subTreeSize(node)
+	tree.markAsRemoved(node)
 	return nil
+}
+
+// markAsRemoved é chamado dentro do Remove para remover uma sub-árvore e o pai se torna ele mesmo.
+func (tree *GenericTree[T]) markAsRemoved(node *Node[T]) {
+	node.setParent(node)
+	for _, child := range node.getChildren() {
+		tree.markAsRemoved(child)
+	}
+}
+
+// subTreeSize encontra o tamanho da sub-árvore.
+func (tree *GenericTree[T]) subTreeSize(node *Node[T]) int {
+	childrenSize := 0
+	for _, child := range node.getChildren() {
+		childrenSize += tree.subTreeSize(child)
+	}
+	return childrenSize + 1
 }
