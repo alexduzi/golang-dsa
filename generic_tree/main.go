@@ -61,6 +61,17 @@ func main() {
 	fmt.Println("PRINT FIND Aplicações:")
 	node := tree.Find("Aplicações")
 	fmt.Println(node.value)
+
+	isExternal, _ := tree.IsExternal(node)
+	isRoot, _ := tree.IsRoot(node)
+	fmt.Printf("Aplicações node IsExternal: %v\n", isExternal)
+	fmt.Printf("Aplicações node IsRoot: %v\n", isRoot)
+
+	node1 := tree.Find("Livro Azul")
+	isExternalNode1, _ := tree.IsExternal(node1)
+	isRootNode1, _ := tree.IsRoot(node1)
+	fmt.Printf("Livro Azul node IsExternal: %v\n", isExternalNode1)
+	fmt.Printf("Livro Azul node IsRoot: %v\n", isRootNode1)
 }
 
 func printTree[T comparable](tree *GenericTree[T]) {
@@ -80,7 +91,7 @@ func printTreeRecursive[T comparable](node *Node[T], tree *GenericTree[T], depth
 	}
 }
 
-type Position[T any] interface {
+type Position[T comparable] interface {
 	element() T
 }
 
@@ -224,7 +235,7 @@ func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
 
 func (tree *GenericTree[T]) Add(element T, parent *Node[T]) (*Node[T], error) {
 	if !tree.IsEmpty() && parent == nil {
-		return nil, errors.New("Parent position can't be null for a non-empty generic tree")
+		return nil, errors.New("parent position can't be null for a non-empty generic tree")
 	}
 
 	if parent != nil {
@@ -253,4 +264,32 @@ func (tree *GenericTree[T]) Children(p Position[T]) ([]*Node[T], error) {
 	// children := make([]*Node[T], 0, len(node.getChildren()))
 	// copy(children, node.getChildren())
 	return slices.Clone(node.getChildren()), nil
+}
+
+// o nó que é externo a lista de filhos dele é vazia
+func (tree *GenericTree[T]) IsExternal(p Position[T]) (bool, error) {
+	node, err := tree.validate(p)
+	if err != nil {
+		return false, err
+	}
+	return node.isLeaf(), nil
+}
+
+func (tree *GenericTree[T]) IsRoot(p Position[T]) (bool, error) {
+	node, err := tree.validate(p)
+	if err != nil {
+		return false, err
+	}
+	return node == tree.root, nil
+}
+
+func (tree *GenericTree[T]) Parent(p Position[T]) (*Node[T], error) {
+	node, err := tree.validate(p)
+	if err != nil {
+		return nil, err
+	}
+	if node == tree.root {
+		return nil, errors.New("the root has no parent")
+	}
+	return node.getParent(), nil
 }
