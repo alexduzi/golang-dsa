@@ -94,16 +94,21 @@ func printTreeRecursive[T comparable](node *Node[T], tree *GenericTree[T], depth
 	}
 }
 
+// Position representa uma posição válida dentro da árvore,
+// expondo apenas o elemento armazenado naquela posição.
 type Position[T comparable] interface {
 	element() T
 }
 
+// Node representa um nó da árvore genérica, armazenando um valor
+// e referências para o nó pai e seus filhos.
 type Node[T comparable] struct {
 	value    T
 	parent   *Node[T]
 	children []*Node[T]
 }
 
+// NewNode cria e retorna um novo nó com o valor e pai informados.
 func NewNode[T comparable](value T, parent *Node[T]) *Node[T] {
 	return &Node[T]{
 		value:    value,
@@ -112,23 +117,28 @@ func NewNode[T comparable](value T, parent *Node[T]) *Node[T] {
 	}
 }
 
+// element retorna o valor armazenado no nó, satisfazendo a interface Position.
 func (node *Node[T]) element() T {
 	return node.value
 }
 
+// getParent retorna o nó pai, ou nil caso seja a raiz.
 func (node *Node[T]) getParent() *Node[T] {
 	return node.parent
 }
 
+// getChildren retorna a lista de filhos do nó.
 func (node *Node[T]) getChildren() []*Node[T] {
 	return node.children
 }
 
+// addChild adiciona um nó filho e atualiza o pai do filho para o nó atual.
 func (node *Node[T]) addChild(child *Node[T]) {
 	node.children = append(node.children, child)
 	child.parent = node
 }
 
+// removeChild remove o filho informado e define seu pai como nil.
 func (node *Node[T]) removeChild(child *Node[T]) {
 	children := make([]*Node[T], 0, len(node.children)-1)
 	for _, c := range node.children {
@@ -140,35 +150,44 @@ func (node *Node[T]) removeChild(child *Node[T]) {
 	node.children = children
 }
 
+// setElement substitui o valor armazenado no nó.
 func (node *Node[T]) setElement(value T) {
 	node.value = value
 }
 
+// isLeaf retorna true se o nó não possui filhos.
 func (node *Node[T]) isLeaf() bool {
 	return len(node.children) == 0
 }
 
+// GenericTree é uma árvore genérica que armazena elementos do tipo T.
+// Cada nó pode ter zero ou mais filhos.
 type GenericTree[T comparable] struct {
 	root *Node[T]
 	size int
 }
 
+// NewGenericTree cria e retorna uma árvore genérica vazia.
 func NewGenericTree[T comparable]() *GenericTree[T] {
 	return &GenericTree[T]{}
 }
 
+// Root retorna o nó raiz da árvore.
 func (tree *GenericTree[T]) Root() *Node[T] {
 	return tree.root
 }
 
+// Size retorna a quantidade de nós presentes na árvore.
 func (tree *GenericTree[T]) Size() int {
 	return tree.size
 }
 
+// IsEmpty retorna true se a árvore não possui nenhum nó.
 func (tree *GenericTree[T]) IsEmpty() bool {
 	return tree.size == 0
 }
 
+// Elements retorna todos os valores armazenados na árvore em ordem DFS pré-ordem.
 func (tree *GenericTree[T]) Elements() []T {
 	return tree.collectElements(make([]T, 0), tree.root)
 }
@@ -187,6 +206,7 @@ func (tree *GenericTree[T]) collectElements(list []T, node *Node[T]) []T {
 	return list
 }
 
+// Positions retorna todos os nós da árvore em ordem DFS pré-ordem.
 func (tree *GenericTree[T]) Positions() []*Node[T] {
 	return tree.collectPositions(make([]*Node[T], 0), tree.root)
 }
@@ -205,6 +225,8 @@ func (tree *GenericTree[T]) collectPositions(list []*Node[T], node *Node[T]) []*
 	return list
 }
 
+// Find busca e retorna o primeiro nó cujo valor seja igual ao elemento informado.
+// Retorna nil se o elemento não for encontrado.
 func (tree *GenericTree[T]) Find(element T) *Node[T] {
 	return tree.findRecursive(tree.root, element)
 }
@@ -225,6 +247,7 @@ func (tree *GenericTree[T]) findRecursive(node *Node[T], target T) *Node[T] {
 	return nil
 }
 
+// validate verifica se a posição informada é um *Node[T] válido e pertencente à árvore.
 func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
 	node, ok := p.(*Node[T])
 	if !ok {
@@ -236,6 +259,8 @@ func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
 	return node, nil
 }
 
+// Add insere um novo nó com o elemento informado como filho do nó pai.
+// Se parent for nil, o novo nó é inserido como raiz (somente se a árvore estiver vazia).
 func (tree *GenericTree[T]) Add(element T, parent *Node[T]) (*Node[T], error) {
 	if !tree.IsEmpty() && parent == nil {
 		return nil, errors.New("parent position can't be null for a non-empty generic tree")
@@ -258,6 +283,7 @@ func (tree *GenericTree[T]) Add(element T, parent *Node[T]) (*Node[T], error) {
 	return newNode, nil
 }
 
+// Children retorna uma cópia da lista de filhos do nó na posição informada.
 func (tree *GenericTree[T]) Children(p Position[T]) ([]*Node[T], error) {
 	node, err := tree.validate(p)
 	if err != nil {
@@ -269,7 +295,7 @@ func (tree *GenericTree[T]) Children(p Position[T]) ([]*Node[T], error) {
 	return slices.Clone(node.getChildren()), nil
 }
 
-// o nó que é externo a lista de filhos dele é vazia
+// IsExternal retorna true se o nó na posição informada não possui filhos (é uma folha).
 func (tree *GenericTree[T]) IsExternal(p Position[T]) (bool, error) {
 	node, err := tree.validate(p)
 	if err != nil {
@@ -278,6 +304,7 @@ func (tree *GenericTree[T]) IsExternal(p Position[T]) (bool, error) {
 	return node.isLeaf(), nil
 }
 
+// IsRoot retorna true se o nó na posição informada é a raiz da árvore.
 func (tree *GenericTree[T]) IsRoot(p Position[T]) (bool, error) {
 	node, err := tree.validate(p)
 	if err != nil {
@@ -286,6 +313,8 @@ func (tree *GenericTree[T]) IsRoot(p Position[T]) (bool, error) {
 	return node == tree.root, nil
 }
 
+// Parent retorna o nó pai da posição informada.
+// Retorna erro se a posição for a raiz, pois a raiz não possui pai.
 func (tree *GenericTree[T]) Parent(p Position[T]) (*Node[T], error) {
 	node, err := tree.validate(p)
 	if err != nil {
@@ -297,11 +326,28 @@ func (tree *GenericTree[T]) Parent(p Position[T]) (*Node[T], error) {
 	return node.getParent(), nil
 }
 
+// Replace substitui o valor do nó na posição informada pelo novo elemento.
 func (tree *GenericTree[T]) Replace(p Position[T], element T) error {
 	node, err := tree.validate(p)
 	if err != nil {
 		return err
 	}
 	node.setElement(element)
+	return nil
+}
+
+// Remove remove o nó na posição informada da árvore.
+// Se for a raiz, a árvore fica vazia. Caso contrário, o nó é desvinculado do pai.
+func (tree *GenericTree[T]) Remove(p Position[T]) error {
+	node, err := tree.validate(p)
+	if err != nil {
+		return err
+	}
+	if node == tree.root {
+		tree.root = nil
+	} else {
+		parent := node.getParent()
+		parent.removeChild(node)
+	}
 	return nil
 }
