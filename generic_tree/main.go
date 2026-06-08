@@ -76,6 +76,7 @@ func main() {
 	fmt.Printf("Generic Tree size: %d\n", tree.Size())
 	fmt.Printf("Generic Tree is empty?: %v\n", tree.IsEmpty())
 
+	fmt.Println("Removing node Métodos")
 	nodeMetodos := tree.Find("Métodos")
 	tree.Remove(nodeMetodos)
 	fmt.Println("PRINT ELEMENTS:")
