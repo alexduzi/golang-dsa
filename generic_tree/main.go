@@ -72,6 +72,9 @@ func main() {
 	isRootNode1, _ := tree.IsRoot(node1)
 	fmt.Printf("Livro Azul node IsExternal: %v\n", isExternalNode1)
 	fmt.Printf("Livro Azul node IsRoot: %v\n", isRootNode1)
+
+	fmt.Printf("Generic Tree size: %d\n", tree.Size())
+	fmt.Printf("Generic Tree is empty?: %v\n", tree.IsEmpty())
 }
 
 func printTree[T comparable](tree *GenericTree[T]) {
@@ -292,4 +295,13 @@ func (tree *GenericTree[T]) Parent(p Position[T]) (*Node[T], error) {
 		return nil, errors.New("the root has no parent")
 	}
 	return node.getParent(), nil
+}
+
+func (tree *GenericTree[T]) Replace(p Position[T], element T) error {
+	node, err := tree.validate(p)
+	if err != nil {
+		return err
+	}
+	node.setElement(element)
+	return nil
 }
