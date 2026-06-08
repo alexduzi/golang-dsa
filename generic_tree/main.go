@@ -40,7 +40,22 @@ func main() {
 	tree.Add("Método recursivo", metodos)
 	tree.Add("Método imperativo", metodos)
 
+	fmt.Println("PRINT DFS PRE ORDER:")
 	printTree(tree)
+
+	fmt.Println()
+
+	fmt.Println("PRINT ELEMENTS:")
+	for _, value := range tree.Elements() {
+		fmt.Println(value)
+	}
+
+	fmt.Println()
+
+	fmt.Println("PRINT POSITIONS:")
+	for _, pos := range tree.Positions() {
+		fmt.Println(pos.value)
+	}
 }
 
 func printTree[T any](tree *GenericTree[T]) {
@@ -129,6 +144,42 @@ func (tree *GenericTree[T]) Size() int {
 
 func (tree *GenericTree[T]) IsEmpty() bool {
 	return tree.size == 0
+}
+
+func (tree *GenericTree[T]) Elements() []T {
+	return tree.collectElements(make([]T, 0), tree.root)
+}
+
+func (tree *GenericTree[T]) collectElements(list []T, node *Node[T]) []T {
+	if node == nil {
+		return list
+	}
+
+	list = append(list, node.value)
+
+	for _, child := range node.getChildren() {
+		list = tree.collectElements(list, child)
+	}
+
+	return list
+}
+
+func (tree *GenericTree[T]) Positions() []*Node[T] {
+	return tree.collectPositions(make([]*Node[T], 0), tree.root)
+}
+
+func (tree *GenericTree[T]) collectPositions(list []*Node[T], node *Node[T]) []*Node[T] {
+	if node == nil {
+		return list
+	}
+
+	list = append(list, node)
+
+	for _, child := range node.getChildren() {
+		list = tree.collectPositions(list, child)
+	}
+
+	return list
 }
 
 func (tree *GenericTree[T]) Root() *Node[T] {
