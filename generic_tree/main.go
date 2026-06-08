@@ -1,38 +1,62 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"slices"
+	"strings"
 )
 
 func main() {
 	tree := NewGenericTree[string]()
 
-	root := tree.Add("Livro Azul", nil)
+	root, err := tree.Add("Livro Azul", nil)
+	if err != nil {
+		panic(err)
+	}
 
-	intro := tree.Add("Introdução", root)
-
-	tree.Add("Capítulo 1", root)
-	tree.Add("Capítulo 2", root)
-
+	intro, err := tree.Add("Introdução", root)
+	if err != nil {
+		panic(err)
+	}
 	tree.Add("Pra quem é este livro", intro)
 	tree.Add("Agradecimentos", intro)
+
+	cap1, err := tree.Add("Capítulo 1", root)
+	if err != nil {
+		panic(err)
+	}
+	tree.Add("Conceitos", cap1)
+	tree.Add("Aplicações", cap1)
+
+	cap2, err := tree.Add("Capítulo 2", root)
+	if err != nil {
+		panic(err)
+	}
+	metodos, _ := tree.Add("Métodos", cap2)
+	tree.Add("Problema terreno", cap2)
+	tree.Add("Problema carros", cap2)
+
+	tree.Add("Método recursivo", metodos)
+	tree.Add("Método imperativo", metodos)
 
 	printTree(tree)
 }
 
 func printTree[T any](tree *GenericTree[T]) {
-	printTreeRecursive(tree.Root(), tree)
+	printTreeRecursive(tree.Root(), tree, 0)
 }
 
-func printTreeRecursive[T any](node *Node[T], tree *GenericTree[T]) {
-	fmt.Printf("%v\n", node.element())
+func printTreeRecursive[T any](node *Node[T], tree *GenericTree[T], depth int) {
+	spaces := "    "
+	spaces = strings.Repeat(spaces, depth)
+	fmt.Printf("%s%v\n", spaces, node.element())
 	children, err := tree.Children(node)
 	if err != nil {
 		panic(err)
 	}
 	for _, child := range children {
-		printTreeRecursive(child, tree)
+		printTreeRecursive(child, tree, depth+1)
 	}
 }
 
@@ -122,14 +146,26 @@ func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
 	return node, nil
 }
 
-func (tree *GenericTree[T]) Add(element T, parent *Node[T]) *Node[T] {
+func (tree *GenericTree[T]) Add(element T, parent *Node[T]) (*Node[T], error) {
+	if !tree.IsEmpty() && parent == nil {
+		return nil, errors.New("Parent position can't be null for a non-empty generic tree")
+	}
+
+	if parent != nil {
+		_, err := tree.validate(parent)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	newNode := NewNode(element, parent)
 	if parent == nil {
 		tree.root = newNode
 	} else {
 		parent.addChild(newNode)
 	}
-	return newNode
+	tree.size++
+	return newNode, nil
 }
 
 func (tree *GenericTree[T]) Children(p Position[T]) ([]*Node[T], error) {
