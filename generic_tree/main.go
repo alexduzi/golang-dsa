@@ -56,13 +56,18 @@ func main() {
 	for _, pos := range tree.Positions() {
 		fmt.Println(pos.value)
 	}
+
+	fmt.Println()
+	fmt.Println("PRINT FIND Aplicações:")
+	node := tree.Find("Aplicações")
+	fmt.Println(node.value)
 }
 
-func printTree[T any](tree *GenericTree[T]) {
+func printTree[T comparable](tree *GenericTree[T]) {
 	printTreeRecursive(tree.Root(), tree, 0)
 }
 
-func printTreeRecursive[T any](node *Node[T], tree *GenericTree[T], depth int) {
+func printTreeRecursive[T comparable](node *Node[T], tree *GenericTree[T], depth int) {
 	spaces := "    "
 	spaces = strings.Repeat(spaces, depth)
 	fmt.Printf("%s%v\n", spaces, node.element())
@@ -79,13 +84,13 @@ type Position[T any] interface {
 	element() T
 }
 
-type Node[T any] struct {
+type Node[T comparable] struct {
 	value    T
 	parent   *Node[T]
 	children []*Node[T]
 }
 
-func NewNode[T any](value T, parent *Node[T]) *Node[T] {
+func NewNode[T comparable](value T, parent *Node[T]) *Node[T] {
 	return &Node[T]{
 		value:    value,
 		parent:   parent,
@@ -129,13 +134,17 @@ func (node *Node[T]) isLeaf() bool {
 	return len(node.children) == 0
 }
 
-type GenericTree[T any] struct {
+type GenericTree[T comparable] struct {
 	root *Node[T]
 	size int
 }
 
-func NewGenericTree[T any]() *GenericTree[T] {
+func NewGenericTree[T comparable]() *GenericTree[T] {
 	return &GenericTree[T]{}
+}
+
+func (tree *GenericTree[T]) Root() *Node[T] {
+	return tree.root
 }
 
 func (tree *GenericTree[T]) Size() int {
@@ -182,8 +191,24 @@ func (tree *GenericTree[T]) collectPositions(list []*Node[T], node *Node[T]) []*
 	return list
 }
 
-func (tree *GenericTree[T]) Root() *Node[T] {
-	return tree.root
+func (tree *GenericTree[T]) Find(element T) *Node[T] {
+	return tree.findRecursive(tree.root, element)
+}
+
+func (tree *GenericTree[T]) findRecursive(node *Node[T], target T) *Node[T] {
+	if node == nil {
+		return nil
+	}
+	if node.value == target {
+		return node
+	}
+	for _, child := range node.getChildren() {
+		found := tree.findRecursive(child, target)
+		if found != nil {
+			return found
+		}
+	}
+	return nil
 }
 
 func (tree *GenericTree[T]) validate(p Position[T]) (*Node[T], error) {
