@@ -38,6 +38,7 @@ func main() {
 	for _, key := range tree.Keys() {
 		fmt.Println(key)
 	}
+	fmt.Println(tree.StringFormat())
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
