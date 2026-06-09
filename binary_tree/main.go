@@ -166,6 +166,37 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 	return true, nil
 }
 
+func (tree *BinarySearchTreeSet[K]) Union(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
+	bTreeResult := NewBinarySearchTreeSet[K]()
+	for _, value := range other.Keys() {
+		bTreeResult.Add(value)
+	}
+	for _, value := range tree.Keys() {
+		bTreeResult.Add(value)
+	}
+	return bTreeResult
+}
+
+func (tree *BinarySearchTreeSet[K]) Intersection(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
+	bTreeResult := NewBinarySearchTreeSet[K]()
+	for _, value := range tree.Keys() {
+		if other.Contains(value) {
+			bTreeResult.Add(value)
+		}
+	}
+	return bTreeResult
+}
+
+func (tree *BinarySearchTreeSet[K]) Difference(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
+	bTreeResult := NewBinarySearchTreeSet[K]()
+	for _, value := range tree.Keys() {
+		if !other.Contains(value) {
+			bTreeResult.Add(value)
+		}
+	}
+	return bTreeResult
+}
+
 func (tree *BinarySearchTreeSet[K]) findMin(node *Node[K]) *Node[K] {
 	for !node.left.isSentinel() {
 		node = node.left
