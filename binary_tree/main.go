@@ -117,6 +117,39 @@ func (tree *BinarySearchTreeSet[K]) StringFormat() string {
 	return tree.stringFormatHelper(tree.root, 0, &strings.Builder{})
 }
 
+func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
+	var zero K
+	if key == zero {
+		return false, errors.New("key cannot be null or empty")
+	}
+
+	nodeToRemove := tree.findKeyLocation(tree.root, key)
+
+	if nodeToRemove.isSentinel() {
+		return false, nil
+	}
+
+	var child *Node[K]
+
+	if nodeToRemove.left.isSentinel() {
+		child = nodeToRemove.right
+	} else {
+		child = nodeToRemove.left
+	}
+
+	child.parent = nodeToRemove.parent
+
+	if nodeToRemove.parent == nil {
+		tree.root = child
+	} else if nodeToRemove == nodeToRemove.parent.left {
+		nodeToRemove.parent.left = child
+	} else {
+		nodeToRemove.parent.right = child
+	}
+
+	return true, nil
+}
+
 func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int, sb *strings.Builder) string {
 	if !node.isSentinel() {
 		tree.stringFormatHelper(node.right, depth+1, sb)
