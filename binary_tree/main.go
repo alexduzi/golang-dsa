@@ -120,10 +120,9 @@ func (tree *BinarySearchTreeSet[K]) StringFormat() string {
 func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int, sb *strings.Builder) string {
 	if !node.isSentinel() {
 		tree.stringFormatHelper(node.right, depth+1, sb)
-		spaces := ""
+		spaces := strings.Repeat("        ", depth)
 		parent := ""
 		if depth > 0 {
-			spaces = strings.Repeat("  ", depth-1) + "--"
 			parent = fmt.Sprintf("%v", node.parent.key)
 		}
 		sb.WriteString(fmt.Sprintf("%s(%v)%s\n", spaces, node.key, parent))
