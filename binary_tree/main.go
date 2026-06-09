@@ -154,7 +154,7 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 	} else {
 		nodeToRemove.parent.right = child
 	}
-
+	tree.size--
 	return true, nil
 }
 
