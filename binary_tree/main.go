@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -27,6 +28,9 @@ func main() {
 		fmt.Println(key)
 	}
 
+	fmt.Println()
+
+	fmt.Println(tree.StringFormat())
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
@@ -107,6 +111,25 @@ func (tree *BinarySearchTreeSet[K]) Keys() []K {
 func (tree *BinarySearchTreeSet[K]) Contains(key K) bool {
 	node := tree.findKeyLocation(tree.root, key)
 	return !node.isSentinel()
+}
+
+func (tree *BinarySearchTreeSet[K]) StringFormat() string {
+	return tree.stringFormatHelper(tree.root, 0, &strings.Builder{})
+}
+
+func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int, sb *strings.Builder) string {
+	if !node.isSentinel() {
+		tree.stringFormatHelper(node.right, depth+1, sb)
+		spaces := ""
+		parent := ""
+		if depth > 0 {
+			spaces = strings.Repeat("  ", depth-1) + "--"
+			parent = fmt.Sprintf("%v", node.parent.key)
+		}
+		sb.WriteString(fmt.Sprintf("%s(%v)%s\n", spaces, node.key, parent))
+		tree.stringFormatHelper(node.left, depth+1, sb)
+	}
+	return sb.String()
 }
 
 // percurso interfixo, retorna os elementos ordenados
