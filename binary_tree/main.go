@@ -7,12 +7,24 @@ import (
 )
 
 func main() {
-	tree := NewBinarySearchTreeSet[int]()
-	tree.Add(53)
-	tree.Add(67)
+	// tree := NewBinarySearchTreeSet[int]()
+	// tree.Add(52)
+	// tree.Add(17)
+	// tree.Add(67)
+
+	collection := []int{52, 17, 67, 11, 33, 55, 83, 14, 31, 46, 23, 26}
+	tree, err := NewBinarySearchTreeSetWithCollection(collection)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(tree.Size())
 	fmt.Println(tree.IsEmpty())
+	fmt.Println()
+
+	for _, key := range tree.Keys() {
+		fmt.Println(key)
+	}
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
@@ -84,6 +96,20 @@ func (tree *BinarySearchTreeSet[K]) Add(key K) error {
 	}
 
 	return nil
+}
+
+func (tree *BinarySearchTreeSet[K]) Keys() []K {
+	return tree.collectKeys(tree.root, make([]K, 0))
+}
+
+// percurso interfixo, retorna os elementos ordenados
+func (tree *BinarySearchTreeSet[K]) collectKeys(node *Node[K], keys []K) []K {
+	if !node.isSentinel() {
+		keys = tree.collectKeys(node.left, keys)
+		keys = append(keys, node.key)
+		keys = tree.collectKeys(node.right, keys)
+	}
+	return keys
 }
 
 func (tree *BinarySearchTreeSet[K]) findKeyLocation(node *Node[K], key K) *Node[K] {
