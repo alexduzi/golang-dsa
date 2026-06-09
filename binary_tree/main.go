@@ -34,13 +34,12 @@ func main() {
 
 	fmt.Println()
 
-	tree.Remove(33)
-	for _, key := range tree.Keys() {
-		fmt.Println(key)
-	}
 	fmt.Println(tree.StringFormat())
 
 	tree.Remove(17)
+	fmt.Println(tree.StringFormat())
+
+	tree.Remove(67)
 	fmt.Println(tree.StringFormat())
 }
 
@@ -140,7 +139,7 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 		return false, nil
 	}
 
-	if nodeToRemove.left.isSentinel() && nodeToRemove.right.isSentinel() {
+	if !nodeToRemove.left.isSentinel() && !nodeToRemove.right.isSentinel() {
 		sucessor := tree.findMin(nodeToRemove.right)
 		nodeToRemove.key = sucessor.key
 		nodeToRemove = sucessor
@@ -168,7 +167,7 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 }
 
 func (tree *BinarySearchTreeSet[K]) findMin(node *Node[K]) *Node[K] {
-	for !node.isSentinel() {
+	for !node.left.isSentinel() {
 		node = node.left
 	}
 	return node
