@@ -25,12 +25,33 @@ func NewBinarySearchTreeSet[K cmp.Ordered]() *BinarySearchTreeSet[K] {
 	return &BinarySearchTreeSet[K]{root: sentinel}
 }
 
+func NewBinarySearchTreeSetWithCollection[K cmp.Ordered](collection []K) (*BinarySearchTreeSet[K], error) {
+	sentinel := NewNodeSentinel[K](nil)
+	bTree := &BinarySearchTreeSet[K]{root: sentinel}
+	err := bTree.AddAll(collection)
+	if err != nil {
+		return nil, err
+	}
+	return bTree, nil
+}
+
 func (tree *BinarySearchTreeSet[K]) Size() int {
 	return tree.size
 }
 
 func (tree *BinarySearchTreeSet[K]) IsEmpty() bool {
 	return tree.size == 0
+}
+
+func (tree *BinarySearchTreeSet[K]) AddAll(collection []K) error {
+	var err error = nil
+	for _, value := range collection {
+		err = tree.Add(value)
+		if err != nil {
+			return err
+		}
+	}
+	return err
 }
 
 func (tree *BinarySearchTreeSet[K]) Add(key K) error {
