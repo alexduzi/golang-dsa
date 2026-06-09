@@ -18,13 +18,15 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(tree.Size())
-	fmt.Println(tree.IsEmpty())
+	fmt.Printf("Size: %d\n", tree.Size())
+	fmt.Printf("IsEmpty: %v\n", tree.IsEmpty())
 	fmt.Println()
 
 	for _, key := range tree.Keys() {
 		fmt.Println(key)
 	}
+
+	fmt.Printf("Contains(11): %v\n", tree.Contains(11))
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
@@ -100,6 +102,11 @@ func (tree *BinarySearchTreeSet[K]) Add(key K) error {
 
 func (tree *BinarySearchTreeSet[K]) Keys() []K {
 	return tree.collectKeys(tree.root, make([]K, 0))
+}
+
+func (tree *BinarySearchTreeSet[K]) Contains(key K) bool {
+	node := tree.findKeyLocation(tree.root, key)
+	return !node.isSentinel()
 }
 
 // percurso interfixo, retorna os elementos ordenados
