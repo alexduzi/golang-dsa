@@ -31,6 +31,13 @@ func main() {
 	fmt.Println()
 
 	fmt.Println(tree.StringFormat())
+
+	fmt.Println()
+
+	tree.Remove(33)
+	for _, key := range tree.Keys() {
+		fmt.Println(key)
+	}
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
