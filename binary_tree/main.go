@@ -20,13 +20,13 @@ func main() {
 
 	fmt.Printf("Size: %d\n", tree.Size())
 	fmt.Printf("IsEmpty: %v\n", tree.IsEmpty())
+	fmt.Printf("Contains(11): %v\n", tree.Contains(11))
 	fmt.Println()
 
 	for _, key := range tree.Keys() {
 		fmt.Println(key)
 	}
 
-	fmt.Printf("Contains(11): %v\n", tree.Contains(11))
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
