@@ -1,9 +1,18 @@
 package main
 
-import "cmp"
+import (
+	"cmp"
+	"errors"
+	"fmt"
+)
 
 func main() {
+	tree := NewBinarySearchTreeSet[int]()
+	tree.Add(53)
+	tree.Add(67)
 
+	fmt.Println(tree.Size())
+	fmt.Println(tree.IsEmpty())
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
@@ -12,7 +21,7 @@ type BinarySearchTreeSet[K cmp.Ordered] struct {
 }
 
 func NewBinarySearchTreeSet[K cmp.Ordered]() *BinarySearchTreeSet[K] {
-	sentinel := &Node[K]{sentinel: true}
+	sentinel := NewNodeSentinel[K](nil)
 	return &BinarySearchTreeSet[K]{root: sentinel}
 }
 
@@ -24,8 +33,36 @@ func (tree *BinarySearchTreeSet[K]) IsEmpty() bool {
 	return tree.size == 0
 }
 
-func (tree *BinarySearchTreeSet[K]) Add() bool {
-	return tree.size == 0
+func (tree *BinarySearchTreeSet[K]) Add(key K) error {
+	var zero K
+	if key == zero {
+		return errors.New("key cannot be null or empty")
+	}
+
+	if tree.IsEmpty() {
+		tree.root = NewNode(key, nil)
+		tree.root.left = NewNodeSentinel(tree.root)
+		tree.root.right = NewNodeSentinel(tree.root)
+		tree.size++
+		return nil
+	}
+
+	node := tree.findKeyLocation(tree.root, key)
+	if node.isSentinel() {
+		parent := node.parent
+		newNode := NewNode(key, parent)
+		newNode.left = NewNodeSentinel(newNode)
+		newNode.right = NewNodeSentinel(newNode)
+
+		if node == parent.left {
+			parent.left = newNode
+		} else if node == parent.right {
+			parent.right = newNode
+		}
+		tree.size++
+	}
+
+	return nil
 }
 
 func (tree *BinarySearchTreeSet[K]) findKeyLocation(node *Node[K], key K) *Node[K] {
@@ -53,6 +90,13 @@ func NewNode[K cmp.Ordered](key K, parent *Node[K]) *Node[K] {
 	return &Node[K]{
 		key:    key,
 		parent: parent,
+	}
+}
+
+func NewNodeSentinel[K cmp.Ordered](parent *Node[K]) *Node[K] {
+	return &Node[K]{
+		sentinel: true,
+		parent:   parent,
 	}
 }
 
