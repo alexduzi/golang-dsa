@@ -39,6 +39,9 @@ func main() {
 		fmt.Println(key)
 	}
 	fmt.Println(tree.StringFormat())
+
+	tree.Remove(17)
+	fmt.Println(tree.StringFormat())
 }
 
 type BinarySearchTreeSet[K cmp.Ordered] struct {
@@ -137,6 +140,12 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 		return false, nil
 	}
 
+	if nodeToRemove.left.isSentinel() && nodeToRemove.right.isSentinel() {
+		sucessor := tree.findMin(nodeToRemove.right)
+		nodeToRemove.key = sucessor.key
+		nodeToRemove = sucessor
+	}
+
 	var child *Node[K]
 
 	if nodeToRemove.left.isSentinel() {
@@ -156,6 +165,13 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 	}
 	tree.size--
 	return true, nil
+}
+
+func (tree *BinarySearchTreeSet[K]) findMin(node *Node[K]) *Node[K] {
+	for !node.isSentinel() {
+		node = node.left
+	}
+	return node
 }
 
 func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int, sb *strings.Builder) string {
