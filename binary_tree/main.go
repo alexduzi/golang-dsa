@@ -43,16 +43,22 @@ func main() {
 	fmt.Println(tree.StringFormat())
 }
 
+// BinarySearchTreeSet é uma árvore binária de busca que funciona como um conjunto,
+// ou seja, não permite chaves duplicadas.
+// O constraint cmp.Ordered garante que o tipo K suporta os operadores <, <=, >, >=,
+// necessários para navegar e comparar chaves na árvore sem precisar de uma função de comparação externa.
 type BinarySearchTreeSet[K cmp.Ordered] struct {
 	root *Node[K]
 	size int
 }
 
+// NewBinarySearchTreeSet cria e retorna uma nova árvore binária de busca vazia.
 func NewBinarySearchTreeSet[K cmp.Ordered]() *BinarySearchTreeSet[K] {
 	sentinel := NewNodeSentinel[K](nil)
 	return &BinarySearchTreeSet[K]{root: sentinel}
 }
 
+// NewBinarySearchTreeSetWithCollection cria uma nova árvore binária de busca e insere todos os elementos da coleção fornecida.
 func NewBinarySearchTreeSetWithCollection[K cmp.Ordered](collection []K) (*BinarySearchTreeSet[K], error) {
 	sentinel := NewNodeSentinel[K](nil)
 	bTree := &BinarySearchTreeSet[K]{root: sentinel}
@@ -63,14 +69,17 @@ func NewBinarySearchTreeSetWithCollection[K cmp.Ordered](collection []K) (*Binar
 	return bTree, nil
 }
 
+// Size retorna o número de elementos presentes na árvore.
 func (tree *BinarySearchTreeSet[K]) Size() int {
 	return tree.size
 }
 
+// IsEmpty retorna verdadeiro se a árvore não contiver nenhum elemento.
 func (tree *BinarySearchTreeSet[K]) IsEmpty() bool {
 	return tree.size == 0
 }
 
+// AddAll insere todos os elementos da coleção na árvore. Retorna erro se algum elemento for inválido.
 func (tree *BinarySearchTreeSet[K]) AddAll(collection []K) error {
 	var err error = nil
 	for _, value := range collection {
@@ -82,6 +91,7 @@ func (tree *BinarySearchTreeSet[K]) AddAll(collection []K) error {
 	return err
 }
 
+// Add insere uma nova chave na árvore. Chaves duplicadas ou zero são ignoradas/rejeitadas.
 func (tree *BinarySearchTreeSet[K]) Add(key K) error {
 	var zero K
 	if key == zero {
@@ -114,19 +124,23 @@ func (tree *BinarySearchTreeSet[K]) Add(key K) error {
 	return nil
 }
 
+// Keys retorna todas as chaves da árvore em ordem crescente (percurso em-ordem).
 func (tree *BinarySearchTreeSet[K]) Keys() []K {
 	return tree.collectKeys(tree.root, make([]K, 0))
 }
 
+// Contains retorna verdadeiro se a chave fornecida estiver presente na árvore.
 func (tree *BinarySearchTreeSet[K]) Contains(key K) bool {
 	node := tree.findKeyLocation(tree.root, key)
 	return !node.isSentinel()
 }
 
+// StringFormat retorna uma representação textual da árvore rotacionada 90° para a esquerda.
 func (tree *BinarySearchTreeSet[K]) StringFormat() string {
 	return tree.stringFormatHelper(tree.root, 0, &strings.Builder{})
 }
 
+// Remove exclui a chave da árvore. Retorna verdadeiro se encontrada e removida, falso se não existir.
 func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 	var zero K
 	if key == zero {
@@ -166,6 +180,7 @@ func (tree *BinarySearchTreeSet[K]) Remove(key K) (bool, error) {
 	return true, nil
 }
 
+// Union retorna uma nova árvore contendo todos os elementos de ambas as árvores (sem duplicatas).
 func (tree *BinarySearchTreeSet[K]) Union(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
 	bTreeResult := NewBinarySearchTreeSet[K]()
 	for _, value := range other.Keys() {
@@ -177,6 +192,7 @@ func (tree *BinarySearchTreeSet[K]) Union(other *BinarySearchTreeSet[K]) *Binary
 	return bTreeResult
 }
 
+// Intersection retorna uma nova árvore contendo apenas os elementos presentes em ambas as árvores.
 func (tree *BinarySearchTreeSet[K]) Intersection(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
 	bTreeResult := NewBinarySearchTreeSet[K]()
 	for _, value := range tree.Keys() {
@@ -187,6 +203,7 @@ func (tree *BinarySearchTreeSet[K]) Intersection(other *BinarySearchTreeSet[K]) 
 	return bTreeResult
 }
 
+// Difference retorna uma nova árvore com os elementos presentes em tree mas ausentes em other.
 func (tree *BinarySearchTreeSet[K]) Difference(other *BinarySearchTreeSet[K]) *BinarySearchTreeSet[K] {
 	bTreeResult := NewBinarySearchTreeSet[K]()
 	for _, value := range tree.Keys() {
@@ -197,6 +214,7 @@ func (tree *BinarySearchTreeSet[K]) Difference(other *BinarySearchTreeSet[K]) *B
 	return bTreeResult
 }
 
+// findMin retorna o nó com a menor chave na subárvore enraizada em node.
 func (tree *BinarySearchTreeSet[K]) findMin(node *Node[K]) *Node[K] {
 	for !node.left.isSentinel() {
 		node = node.left
@@ -204,6 +222,7 @@ func (tree *BinarySearchTreeSet[K]) findMin(node *Node[K]) *Node[K] {
 	return node
 }
 
+// stringFormatHelper constrói recursivamente a representação textual da árvore com indentação por profundidade.
 func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int, sb *strings.Builder) string {
 	if !node.isSentinel() {
 		tree.stringFormatHelper(node.right, depth+1, sb)
@@ -218,7 +237,7 @@ func (tree *BinarySearchTreeSet[K]) stringFormatHelper(node *Node[K], depth int,
 	return sb.String()
 }
 
-// percurso interfixo, retorna os elementos ordenados
+// collectKeys percorre a árvore em ordem (esquerda, raiz, direita) e acumula as chaves ordenadas.
 func (tree *BinarySearchTreeSet[K]) collectKeys(node *Node[K], keys []K) []K {
 	if !node.isSentinel() {
 		keys = tree.collectKeys(node.left, keys)
@@ -228,6 +247,7 @@ func (tree *BinarySearchTreeSet[K]) collectKeys(node *Node[K], keys []K) []K {
 	return keys
 }
 
+// findKeyLocation busca a posição da chave na árvore. Retorna o nó se encontrado ou o sentinela onde deveria estar.
 func (tree *BinarySearchTreeSet[K]) findKeyLocation(node *Node[K], key K) *Node[K] {
 	for !node.isSentinel() {
 		if key == node.key {
@@ -241,6 +261,8 @@ func (tree *BinarySearchTreeSet[K]) findKeyLocation(node *Node[K], key K) *Node[
 	return node
 }
 
+// Node representa um nó da árvore binária de busca, podendo ser um nó real ou um sentinela (folha nula).
+// Usa o mesmo constraint cmp.Ordered da árvore para manter compatibilidade de tipos com BinarySearchTreeSet.
 type Node[K cmp.Ordered] struct {
 	key      K
 	parent   *Node[K]
@@ -249,6 +271,7 @@ type Node[K cmp.Ordered] struct {
 	sentinel bool
 }
 
+// NewNode cria um novo nó com a chave e o pai fornecidos.
 func NewNode[K cmp.Ordered](key K, parent *Node[K]) *Node[K] {
 	return &Node[K]{
 		key:    key,
@@ -256,6 +279,7 @@ func NewNode[K cmp.Ordered](key K, parent *Node[K]) *Node[K] {
 	}
 }
 
+// NewNodeSentinel cria um nó sentinela (nulo) usado como marcador de folha na árvore.
 func NewNodeSentinel[K cmp.Ordered](parent *Node[K]) *Node[K] {
 	return &Node[K]{
 		sentinel: true,
@@ -263,6 +287,7 @@ func NewNodeSentinel[K cmp.Ordered](parent *Node[K]) *Node[K] {
 	}
 }
 
+// isSentinel retorna verdadeiro se o nó for um sentinela (nó nulo/folha).
 func (node *Node[K]) isSentinel() bool {
 	return node.sentinel
 }
