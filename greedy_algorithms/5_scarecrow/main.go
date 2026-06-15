@@ -26,5 +26,17 @@ func main() {
 }
 
 func minimumScarecrows(n int, field string) int {
-	return 0
+
+	ans := 0
+
+	// percorrer o campo
+	for i := 0; i < n; i++ {
+		// achar ponto fértil
+		if field[i] == '.' {
+			ans++
+			i += 2
+		}
+	}
+
+	return ans
 }
