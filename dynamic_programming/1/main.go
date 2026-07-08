@@ -52,6 +52,7 @@ func fib2(n int) int {
 func fib3(n int) int {
 	m := make(map[int]int)
 
+	// preenche os casos base
 	m[0] = 0
 	m[1] = 1
 	m[2] = 1
